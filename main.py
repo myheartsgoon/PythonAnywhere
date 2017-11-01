@@ -51,10 +51,22 @@ def wechat_auth():
             if xml_rec.find('Event') is None:
                 content = xml_rec.find('Content').text
                 if content.startswith('翻译'):
-                    query = content.lstrip('翻译')
-                    response = make_response(xml_rep % (fromu, tou, str(int(time.time())), translate.main(query)))
-                    response.content_type = 'application/xml'
-                    return response
+                    howto = "#翻译功能使用方法\n发送： 翻译+目标语言+需要翻译的文字\n例如： \n翻译 英语 这是一段文字\n"\
+                            "翻译 日语 这是一段文字\n已支持语言： 英语， 中文， 日语， 韩语， 法语， 意大利语"
+                    lg_list = {'英语':'en', '中文':'zh', '日语':'ja', '韩语':'ko', '法语':'fr', '意大利语':'it'}
+                    query = content.lstrip('翻译').strip()
+                    query_info = query.split()
+                    if len(query) == 0 or query_info[0] not in lg_list \
+                            or len(query_info) != 2:
+                        response = make_response(
+                            xml_rep % (fromu, tou, str(int(time.time())), howto))
+                        response.content_type = 'application/xml'
+                        return response
+                    else:
+                        to_l = lg_list.get(query_info[0])
+                        response = make_response(xml_rep % (fromu, tou, str(int(time.time())), translate.translate(query_info[1],to_l)))
+                        response.content_type = 'application/xml'
+                        return response
                 else:
                     reply = "我理解不了你说啥诶，那我就来学个舌咯~[耶]\n" + "你说~~" + content + "~~"
                     response = make_response(xml_rep % (fromu, tou, str(int(time.time())), reply))
