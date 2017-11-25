@@ -69,20 +69,21 @@ def wechat_auth():
                         response.content_type = 'application/xml'
                         return response
 
-                if content.strip().lower().startswith('vip'):
+                if content.strip()[:3] == 'vip':
                     howto = "#VIP视频地址解析功能使用方法\n发送： vip+视频地址\n例如： \n"\
                         "vip http://v.youku.com/v_show/id_XMjg5NzgyNjA5Mg==.html\n" \
-                            "已支持视频网站： 爱奇艺，优酷，腾讯等"
-                    query = content.strip().lower().lstrip('vip').strip()
+                        "注意：vip为小写"\
+                        "已支持视频网站： 爱奇艺，优酷，腾讯等\n"
+                    query = content.strip().lstrip('vip').strip().split()
                     if len(query) == 0:
                         response = make_response(
                             xml_rep % (fromu, tou, str(int(time.time())), howto))
                         response.content_type = 'application/xml'
                         return response
                     else:
-                        first_url = 'http://api.baiyug.cn/vip/index.php?url=' + query
-                        second_url = 'http://pupudy.com/play?make=url&id=' + query
-                        third_url = 'http://tv.dsqndh.com/?jk=http%3A%2F%2Fjqaaa.com%2Fjx.php%3Furl%3D&url=' + query
+                        first_url = 'http://api.baiyug.cn/vip/index.php?url=' + query[0]
+                        second_url = 'http://pupudy.com/play?make=url&id=' + query[0]
+                        third_url = 'http://tv.dsqndh.com/?jk=http%3A%2F%2Fjqaaa.com%2Fjx.php%3Furl%3D&url=' + query[0]
                         res = requests.get(first_url)
                         res.encoding = 'utf-8'
                         if res.text[-8:].strip() == '请输入视频地址！':
