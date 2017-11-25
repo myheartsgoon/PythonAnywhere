@@ -14,4 +14,4 @@ def translate(querystr, to_l="en", from_l="zh"):
     result = response.text[response.text.find('class="t0">') + len('class="t0">'):].split('<')[0]
     return result
 #print(translate("After numerous media reports, Nike Business (China) Co., Ltd. finally issued a fourth statement to consumers yesterday:"))
-print(translate("不知龟鹿"))
+#print(translate("不知龟鹿"))
